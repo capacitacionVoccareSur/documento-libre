@@ -52,11 +52,6 @@ const PASOS: Paso[] = [
     ),
   },
   {
-    destino: '[data-tour="limpiar"]',
-    titulo: "Limpiar borrador",
-    texto: "Borra todo para empezar otro documento. Si fue sin querer, lo recuperás con Deshacer en el aviso que aparece.",
-  },
-  {
     destino: '[data-tour="generar"]',
     titulo: "Generá el documento",
     texto: (
@@ -72,6 +67,11 @@ const PASOS: Paso[] = [
         <li className="texto-2">Al generar, los datos del formato se registran para el seguimiento de capacitaciones.</li>
       </ul>
     ),
+  },
+  {
+    destino: '[data-tour="limpiar"]',
+    titulo: "Limpiar borrador",
+    texto: "Cuando termines, borrá todo para empezar otro documento. Si fue sin querer, lo recuperás con Deshacer en el aviso que aparece.",
   },
 ]
 
