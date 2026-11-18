@@ -114,7 +114,7 @@ Publicadas en la raíz de un dominio, no necesitan `BASE_PATH`:
 | `lib/exportar-word.ts` | Rellena la plantilla original .docx (marcadores, filas de asistentes, contenido e imágenes) |
 | `lib/exportar-html.ts` | HTML con estilos en línea para Google Docs, e impresión de la hoja |
 | `lib/google-docs.ts` | Permiso de Google (GIS) y subida del .docx a Drive como Google Docs |
-| `components/Ayuda.tsx` | Panel "Cómo se usa" |
+| `components/Recorrido.tsx` | Instructivo paso a paso ("¿Cómo se usa?"): ilumina cada parte (`data-tour`) y sombrea el resto |
 | `lib/registro.ts` | Envío de cada documento generado al Apps Script de la planilla |
 | `apps-script/Registro.gs` | Script que agrega las filas en Google Sheets |
 | `public/plantilla/` | Plantilla original, logo y franja del pie |

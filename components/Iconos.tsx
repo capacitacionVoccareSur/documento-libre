@@ -58,3 +58,6 @@ export const IconoParrafo = (p: P) => (
 export const IconoAyuda = (p: P) => (
   <Base {...p}><circle cx="12" cy="12" r="9" /><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 2.2-2.4 3.7" /><path d="M12 17h.01" /></Base>
 )
+export const IconoLimpiar = (p: P) => (
+  <Base {...p}><path d="m16 4 4 4-9.5 9.5H6.5L4 15z" /><path d="M10 8l6 6" /><path d="M8 20h12" /></Base>
+)

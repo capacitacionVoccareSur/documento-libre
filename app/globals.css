@@ -214,41 +214,50 @@ body { font-family: var(--font-ui), system-ui, sans-serif; }
   background: var(--degrade); color: #fff;
   font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 11px;
 }
-.marco-ayuda { margin-left: auto; font-weight: 600; color: var(--plantilla); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.marco-ayuda { font-weight: 600; color: var(--plantilla); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .marco-ayuda:hover { color: var(--text); }
 @media (max-width: 640px) {
   .marco-borrador { border-width: 4px; border-radius: 14px; padding: 8px 8px 10px; }
   .marco-etiqueta { margin: 0 0 10px; }
 }
 
-/* ── Ayuda ── */
-.dialogo {
-  width: min(560px, calc(100vw - 32px)); max-height: calc(100dvh - 48px);
-  margin: auto; padding: 0; border: 0; border-radius: calc(var(--radius) + 6px);
-  background: var(--surface); color: var(--text); box-shadow: var(--pop-shadow);
+/* ── Instructivo paso a paso ── */
+.recorrido-bloqueo { position: fixed; inset: 0; z-index: 60; }
+.recorrido-foco {
+  position: fixed; z-index: 61; border-radius: 12px; pointer-events: none;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 6px rgb(214 36 110 / .55), 0 0 0 9999px rgb(25 36 65 / .6);
+  transition: top .3s ease, left .3s ease, width .3s ease, height .3s ease;
 }
-.dialogo::backdrop { background: rgb(25 36 65 / .45); backdrop-filter: blur(2px); }
-.dialogo[open] { animation: aparecer-dialogo .18s ease-out; }
-@keyframes aparecer-dialogo { from { opacity: 0; transform: translateY(8px) scale(.98); } }
-@media (prefers-reduced-motion: reduce) { .dialogo[open] { animation: none; } }
-.dialogo-cabecera { position: relative; padding: 20px 22px 16px; }
-.dialogo-cabecera::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--degrade); }
-.pasos { counter-reset: paso; display: grid; gap: 14px; padding: 18px 22px 6px; }
-.paso { display: grid; grid-template-columns: 28px 1fr; gap: 12px; font-size: 14px; line-height: 1.5; }
-.paso::before {
-  counter-increment: paso; content: counter(paso);
-  display: grid; place-items: center; width: 28px; height: 28px; border-radius: 999px;
-  background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 13px;
+.recorrido-tarjeta {
+  position: fixed; z-index: 62; overflow: hidden;
+  background: var(--surface); color: var(--text);
+  border-radius: calc(var(--radius) + 6px); box-shadow: var(--pop-shadow);
+  padding: 18px 18px 14px;
+  transition: top .3s ease, left .3s ease;
 }
-.paso b { display: block; font-weight: 700; margin-bottom: 2px; }
-.paso ul { margin-top: 4px; display: grid; gap: 3px; }
-.paso li { padding-left: 14px; position: relative; color: var(--text-2); }
-.paso li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 5px; height: 5px; border-radius: 999px; background: var(--plantilla-linea); }
-.muestra-campo {
-  display: inline-block; padding: 0 6px; border-radius: 3px; color: var(--plantilla); font-style: italic;
-  background: linear-gradient(90deg, var(--plantilla-linea) 55%, transparent 0) left bottom / 7px 1.5px repeat-x, var(--plantilla-fondo);
+.recorrido-tarjeta::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--degrade); }
+.recorrido-contador { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--plantilla); }
+.recorrido-lista { display: grid; gap: 4px; }
+.recorrido-lista li { position: relative; padding-left: 14px; }
+.recorrido-lista li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 5px; height: 5px; border-radius: 999px; background: var(--plantilla-linea); }
+.recorrido-puntos { display: flex; gap: 5px; }
+.recorrido-puntos span { width: 6px; height: 6px; border-radius: 999px; background: var(--border-strong); transition: width .2s ease, background-color .2s ease; }
+.recorrido-puntos .hecho { background: var(--plantilla-linea); }
+.recorrido-puntos .activo { width: 18px; background: var(--plantilla); }
+@media (prefers-reduced-motion: reduce) {
+  .recorrido-foco, .recorrido-tarjeta, .recorrido-puntos span { transition: none; }
 }
-.dialogo-pie { margin: 14px 22px 20px; padding: 12px 14px; border-radius: var(--radius); background: var(--canvas); font-size: 13px; color: var(--text-2); display: grid; gap: 6px; }
+
+/* Botón "Limpiar borrador" en la etiqueta del marco */
+.marco-limpiar {
+  display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px;
+  border-radius: 999px; border: var(--border-w) solid var(--border-strong); background: var(--surface);
+  color: var(--text); font-weight: 600; font-size: 12px; cursor: pointer;
+  transition: border-color .15s ease, color .15s ease, background-color .15s ease;
+}
+.marco-limpiar svg { width: 14px; height: 14px; }
+.marco-limpiar:hover { border-color: var(--plantilla); color: var(--plantilla); }
+.marco-limpiar:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .barra {
   position: sticky; top: 72px; z-index: 15;
@@ -274,3 +283,10 @@ body { font-family: var(--font-ui), system-ui, sans-serif; }
 }
 @media (max-width: 640px) {
 }
+
+/* Pie mínimo */
+.pie {
+  margin-top: 40px; font-size: 11px; letter-spacing: .02em; color: var(--text-2); opacity: .8;
+  display: flex; align-items: center; gap: 8px;
+}
+.pie::before, .pie::after { content: ""; width: 18px; height: 1px; background: var(--border-strong); }

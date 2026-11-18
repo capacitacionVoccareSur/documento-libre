@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import Hoja from "@/components/Hoja"
-import Ayuda from "@/components/Ayuda"
+import Recorrido from "@/components/Recorrido"
 import { BarraFormato } from "@/components/Editor"
 import {
   IconoAlerta,
@@ -14,7 +14,7 @@ import {
   IconoDocumento,
   IconoExterno,
   IconoImprimir,
-  IconoNuevo,
+  IconoLimpiar,
 } from "@/components/Iconos"
 import {
   borrarBorrador,
@@ -62,11 +62,37 @@ export default function Inicio() {
 
   const tieneContenido = !!(doc.titulo || doc.responsable || doc.desarrollo || doc.asistentes.some((a) => a.nombre || a.operacion))
 
-  const nuevo = () => {
-    if (tieneContenido && !confirm("¿Empezar un documento nuevo? Se borrará el contenido actual.")) return
+  // Limpia el borrador para empezar otro documento; se puede deshacer desde el aviso
+  const limpiar = () => {
+    if (!tieneContenido) {
+      mostrarAviso({ titulo: "El borrador ya está vacío", tipo: "ok" }, 3000)
+      return
+    }
+    const anterior = doc
     borrarBorrador()
     setDoc(documentoNuevo())
     setVersion((v) => v + 1)
+    mostrarAviso(
+      {
+        titulo: "Borrador limpio",
+        detalle: (
+          <>
+            Ya podés empezar otro documento.{" "}
+            <button
+              type="button"
+              className="font-semibold text-[var(--text)] underline underline-offset-2"
+              onClick={() => {
+                setDoc(anterior)
+                setVersion((v) => v + 1)
+                setAviso(null)
+              }}
+            >Deshacer</button>
+          </>
+        ),
+        tipo: "ok",
+      },
+      10000,
+    )
   }
 
   const exportarWord = async () => {
@@ -177,12 +203,11 @@ export default function Inicio() {
           </div>
           <nav className="flex flex-wrap items-center gap-1.5" aria-label="Acciones del documento">
             <button className="btn btn-fantasma" onClick={() => setAyuda(true)}><IconoAyuda />Ayuda</button>
-            <button className="btn btn-fantasma" onClick={nuevo}><IconoNuevo />Nuevo</button>
-            <button className="btn btn-fantasma" onClick={exportarPdf} disabled={!!ocupado}><IconoImprimir />PDF</button>
-            <button className="btn" onClick={abrirEnGoogleDocs} disabled={!!ocupado}>
+            <button className="btn btn-fantasma" onClick={exportarPdf} data-tour="generar" disabled={!!ocupado}><IconoImprimir />PDF</button>
+            <button className="btn" onClick={abrirEnGoogleDocs} disabled={!!ocupado} data-tour="generar">
               <IconoExterno />{ocupado === "gdocs" ? (googleDocsDirecto ? "Creando…" : "Copiando…") : "Google Docs"}
             </button>
-            <button className="btn btn-primario" onClick={exportarWord} disabled={!!ocupado}>
+            <button className="btn btn-primario" onClick={exportarWord} disabled={!!ocupado} data-tour="generar">
               <IconoDescargar />{ocupado === "word" ? "Generando…" : "Descargar Word"}
             </button>
           </nav>
@@ -202,8 +227,11 @@ export default function Inicio() {
         <div className="marco-borrador">
           <div className="marco-etiqueta">
             <span className="marco-sello">Borrador</span>
-            <span>Vista previa de la plantilla. El documento final se crea al descargarlo.</span>
+            <span className="mr-auto">Vista previa de la plantilla. El documento final se crea al descargarlo.</span>
             <button type="button" className="marco-ayuda" onClick={() => setAyuda(true)}>¿Cómo se usa?</button>
+            <button type="button" className="marco-limpiar" onClick={limpiar} data-tour="limpiar">
+              <IconoLimpiar />Limpiar borrador
+            </button>
           </div>
           <Hoja
             doc={doc}
@@ -234,9 +262,11 @@ export default function Inicio() {
             </div>
           ))}
         </section>
+
+        <footer className="pie">Creado por Edward Ravelo</footer>
       </main>
 
-      <Ayuda abierta={ayuda} onCerrar={() => setAyuda(false)} />
+      <Recorrido abierto={ayuda} onCerrar={() => setAyuda(false)} />
 
       {aviso && (
         <div role="status" className="aviso">

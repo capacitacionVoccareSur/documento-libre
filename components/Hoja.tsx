@@ -85,7 +85,7 @@ export default function Hoja({ doc, version, onChange, onAviso }: Props) {
           </table>
 
           {/* ── Fecha ── */}
-          <table className="t-fecha" aria-label="Fecha">
+          <table className="t-fecha" aria-label="Fecha" data-tour="fecha">
             <colgroup><col style={{ width: 57 }} /><col style={{ width: 59 }} /><col style={{ width: 72 }} /></colgroup>
             <tbody>
               <tr><th>DIA</th><th>MES</th><th>AÑO</th></tr>
@@ -112,7 +112,7 @@ export default function Hoja({ doc, version, onChange, onAviso }: Props) {
           <table className="t-principal">
             <colgroup><col style={{ width: 516 }} /><col style={{ width: 162 }} /></colgroup>
             <tbody>
-              <tr style={{ height: 30 }}>
+              <tr style={{ height: 30 }} data-tour="datos">
                 <td colSpan={2}>
                   <label className="campo-linea">
                     <b>TÍTULO:</b>
@@ -120,7 +120,7 @@ export default function Hoja({ doc, version, onChange, onAviso }: Props) {
                   </label>
                 </td>
               </tr>
-              <tr style={{ height: 38 }}>
+              <tr style={{ height: 38 }} data-tour="datos">
                 <td colSpan={2}>
                   <label className="campo-linea">
                     <b>RESPONSABLE:</b>
@@ -128,7 +128,7 @@ export default function Hoja({ doc, version, onChange, onAviso }: Props) {
                   </label>
                 </td>
               </tr>
-              <tr style={{ height: 27 }}>
+              <tr style={{ height: 27 }} data-tour="datos">
                 <td colSpan={2}>
                   <div className="flex items-baseline">
                     <label className="campo-linea shrink-0" style={{ width: 236 }}>
@@ -142,7 +142,7 @@ export default function Hoja({ doc, version, onChange, onAviso }: Props) {
                   </div>
                 </td>
               </tr>
-              <tr style={{ height: 111 }}>
+              <tr style={{ height: 111 }} data-tour="desarrollo">
                 <td colSpan={2} className="celda-desarrollo">
                   <p>&nbsp;</p>
                   <p className="sangria"><b>DESARROLLO DEL TEMA: </b></p>
@@ -160,13 +160,13 @@ export default function Hoja({ doc, version, onChange, onAviso }: Props) {
                   <p>&nbsp;</p>
                 </td>
               </tr>
-              <tr style={{ height: 20 }}><td colSpan={2} className="text-center"><b>ASISTENTES</b></td></tr>
+              <tr style={{ height: 20 }} data-tour="asistentes"><td colSpan={2} className="text-center"><b>ASISTENTES</b></td></tr>
               <tr style={{ height: 20 }}>
                 <td className="text-center"><b>NOMBRE</b></td>
                 <td className="text-center"><b>OPERACIÓN</b></td>
               </tr>
               {doc.asistentes.map((a, i) => (
-                <tr key={i} style={{ height: 19 }} className="group">
+                <tr key={i} style={{ height: 19 }} className="group" data-tour="asistentes">
                   <td>
                     <input className="campo text-center font-bold" aria-label={`Nombre del asistente ${i + 1}`} placeholder="Nombre y apellido" value={a.nombre} onChange={(ev) => setAsistente(i, "nombre", ev.target.value)} />
                   </td>
