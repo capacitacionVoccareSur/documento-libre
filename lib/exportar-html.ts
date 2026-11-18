@@ -128,6 +128,7 @@ export function imprimir(): void {
   const original = document.querySelector<HTMLElement>(".pagina")
   if (!original) return
   const copia = original.cloneNode(true) as HTMLElement
+  copia.classList.remove("editable") // sin las marcas de plantilla de la pantalla
   // Inputs → texto, editor → contenido estático
   copia.querySelectorAll("input").forEach((i) => {
     if (i.type === "date") { i.remove(); return }

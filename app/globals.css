@@ -28,6 +28,12 @@
   --field-focus: #f6ecf6;
   --font-ui: var(--f-figtree);
   --degrade: linear-gradient(90deg, #d6246e 0%, #8e2a8b 45%, #192441 100%);
+  /* Marcas de plantilla (solo en pantalla) */
+  --plantilla: #b8215f;
+  --plantilla-fondo: #fdf1f6;
+  --plantilla-linea: #e48ab0;
+  --marco-fondo-1: #eeeaf4;
+  --marco-fondo-2: #e9e4f0;
 }
 
 @theme inline {
@@ -173,10 +179,81 @@ body { font-family: var(--font-ui), system-ui, sans-serif; }
 .contenido img { max-width: 100%; height: auto; display: inline-block; }
 .contenido img:hover { outline: 2px solid var(--accent); }
 
+/* ── Marcas de plantilla ─────────────────────────────────────────────────────
+   Solo en pantalla (clase .editable). imprimir() la quita y el Word / Google Docs
+   se generan aparte, así que nada de esto llega al documento final. */
+.pagina.editable .campo:placeholder-shown,
+.pagina.editable .contenido:empty {
+  background:
+    linear-gradient(90deg, var(--plantilla-linea) 55%, transparent 0) left bottom / 7px 1.5px repeat-x,
+    var(--plantilla-fondo);
+}
+.pagina.editable .campo::placeholder,
+.pagina.editable .contenido:empty::before { color: var(--plantilla); opacity: .75; font-style: italic; }
+.pagina.editable .campo:placeholder-shown:focus { background-color: var(--field-focus); }
+.pagina.editable .contenido:empty { min-height: calc(1.41em * 3); padding: 2px 4px; border-radius: 3px; }
+.pagina.editable .fila-clic td { box-shadow: inset 0 -2px 0 var(--plantilla-linea); }
+
+/* ── Marco de borrador alrededor de la hoja ── */
+.marco-borrador {
+  position: relative; width: 100%; max-width: 870px;
+  border: 5px solid transparent; border-radius: 20px;
+  padding: 10px 22px 20px;
+  background:
+    repeating-linear-gradient(135deg, var(--marco-fondo-1) 0 12px, var(--marco-fondo-2) 12px 24px) padding-box,
+    var(--degrade) border-box;
+}
+.marco-etiqueta {
+  margin: 0 -6px 12px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;
+  font-size: 12px; color: var(--text-2);
+}
+.marco-sello {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 10px; border-radius: 999px;
+  background: var(--degrade); color: #fff;
+  font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 11px;
+}
+.marco-ayuda { margin-left: auto; font-weight: 600; color: var(--plantilla); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.marco-ayuda:hover { color: var(--text); }
+@media (max-width: 640px) {
+  .marco-borrador { border-width: 4px; border-radius: 14px; padding: 8px 8px 10px; }
+  .marco-etiqueta { margin: 0 0 10px; }
+}
+
+/* ── Ayuda ── */
+.dialogo {
+  width: min(560px, calc(100vw - 32px)); max-height: calc(100dvh - 48px);
+  margin: auto; padding: 0; border: 0; border-radius: calc(var(--radius) + 6px);
+  background: var(--surface); color: var(--text); box-shadow: var(--pop-shadow);
+}
+.dialogo::backdrop { background: rgb(25 36 65 / .45); backdrop-filter: blur(2px); }
+.dialogo[open] { animation: aparecer-dialogo .18s ease-out; }
+@keyframes aparecer-dialogo { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+@media (prefers-reduced-motion: reduce) { .dialogo[open] { animation: none; } }
+.dialogo-cabecera { position: relative; padding: 20px 22px 16px; }
+.dialogo-cabecera::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--degrade); }
+.pasos { counter-reset: paso; display: grid; gap: 14px; padding: 18px 22px 6px; }
+.paso { display: grid; grid-template-columns: 28px 1fr; gap: 12px; font-size: 14px; line-height: 1.5; }
+.paso::before {
+  counter-increment: paso; content: counter(paso);
+  display: grid; place-items: center; width: 28px; height: 28px; border-radius: 999px;
+  background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 13px;
+}
+.paso b { display: block; font-weight: 700; margin-bottom: 2px; }
+.paso ul { margin-top: 4px; display: grid; gap: 3px; }
+.paso li { padding-left: 14px; position: relative; color: var(--text-2); }
+.paso li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 5px; height: 5px; border-radius: 999px; background: var(--plantilla-linea); }
+.muestra-campo {
+  display: inline-block; padding: 0 6px; border-radius: 3px; color: var(--plantilla); font-style: italic;
+  background: linear-gradient(90deg, var(--plantilla-linea) 55%, transparent 0) left bottom / 7px 1.5px repeat-x, var(--plantilla-fondo);
+}
+.dialogo-pie { margin: 14px 22px 20px; padding: 12px 14px; border-radius: var(--radius); background: var(--canvas); font-size: 13px; color: var(--text-2); display: grid; gap: 6px; }
+
 .barra {
   position: sticky; top: 72px; z-index: 15;
   display: flex; flex-wrap: wrap; align-items: center; gap: 2px;
-  width: 100%; max-width: 816px; margin: 0 auto 12px;
+  width: 100%; max-width: 870px; margin: 0 auto 12px;
   background: var(--surface); border: var(--border-w) solid var(--border); border-radius: calc(var(--radius) + 2px);
   padding: 4px; box-shadow: var(--btn-shadow);
 }

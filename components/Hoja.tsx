@@ -52,7 +52,7 @@ export default function Hoja({ doc, version, onChange, onAviso }: Props) {
   return (
     <div ref={contenedor} className="w-full">
       <div className="mx-auto" style={{ width: ANCHO_PAGINA, zoom: escala }}>
-        <article className="pagina" aria-label="Documento RE-VOC-TR-02">
+        <article className="pagina editable" aria-label="Documento RE-VOC-TR-02">
           {/* ── Encabezado del formato (fijo, igual a la plantilla) ── */}
           <table className="t-enc" aria-label="Encabezado del formato">
             <colgroup><col style={{ width: 118 }} /><col style={{ width: 270 }} /><col style={{ width: 200 }} /></colgroup>
@@ -89,7 +89,7 @@ export default function Hoja({ doc, version, onChange, onAviso }: Props) {
             <colgroup><col style={{ width: 57 }} /><col style={{ width: 59 }} /><col style={{ width: 72 }} /></colgroup>
             <tbody>
               <tr><th>DIA</th><th>MES</th><th>AÑO</th></tr>
-              <tr className="fila-clic" style={{ height: 28 }} onClick={abrirFecha} title="Cambiar fecha">
+              <tr className="fila-clic" style={{ height: 28 }} onClick={abrirFecha} title="Hacé clic para cambiar la fecha">
                 <td>{dia}</td>
                 <td>{mes}</td>
                 <td className="relative">
@@ -168,10 +168,10 @@ export default function Hoja({ doc, version, onChange, onAviso }: Props) {
               {doc.asistentes.map((a, i) => (
                 <tr key={i} style={{ height: 19 }} className="group">
                   <td>
-                    <input className="campo text-center font-bold" aria-label={`Nombre del asistente ${i + 1}`} value={a.nombre} onChange={(ev) => setAsistente(i, "nombre", ev.target.value)} />
+                    <input className="campo text-center font-bold" aria-label={`Nombre del asistente ${i + 1}`} placeholder="Nombre y apellido" value={a.nombre} onChange={(ev) => setAsistente(i, "nombre", ev.target.value)} />
                   </td>
                   <td className="relative">
-                    <input className="campo text-center font-bold" aria-label={`Operación del asistente ${i + 1}`} value={a.operacion} onChange={(ev) => setAsistente(i, "operacion", ev.target.value)} />
+                    <input className="campo text-center font-bold" aria-label={`Operación del asistente ${i + 1}`} placeholder="Operación" value={a.operacion} onChange={(ev) => setAsistente(i, "operacion", ev.target.value)} />
                     {doc.asistentes.length > 1 && (
                       <button
                         type="button"

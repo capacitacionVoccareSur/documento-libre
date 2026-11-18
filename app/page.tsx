@@ -2,9 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import Hoja from "@/components/Hoja"
+import Ayuda from "@/components/Ayuda"
 import { BarraFormato } from "@/components/Editor"
 import {
   IconoAlerta,
+  IconoAyuda,
   IconoCandado,
   IconoCerrar,
   IconoCheck,
@@ -33,6 +35,7 @@ export default function Inicio() {
   const [version, setVersion] = useState(0)
   const [ocupado, setOcupado] = useState<Accion>(null)
   const [aviso, setAviso] = useState<Aviso | null>(null)
+  const [ayuda, setAyuda] = useState(false)
   const timerAviso = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   // Cargar borrador solo en el cliente (la página es estática)
@@ -129,6 +132,7 @@ export default function Inicio() {
             </div>
           </div>
           <nav className="flex flex-wrap items-center gap-1.5" aria-label="Acciones del documento">
+            <button className="btn btn-fantasma" onClick={() => setAyuda(true)}><IconoAyuda />Ayuda</button>
             <button className="btn btn-fantasma" onClick={nuevo}><IconoNuevo />Nuevo</button>
             <button className="btn btn-fantasma" onClick={exportarPdf} disabled={!!ocupado}><IconoImprimir />PDF</button>
             <button className="btn" onClick={abrirEnGoogleDocs} disabled={!!ocupado}>
@@ -142,7 +146,7 @@ export default function Inicio() {
       </header>
 
       <main className="mx-auto flex max-w-6xl flex-col items-center px-4 pb-28 pt-6 sm:px-6">
-        <div className="mb-2 flex w-full max-w-[816px] items-center justify-end text-xs">
+        <div className="mb-2 flex w-full max-w-[870px] items-center justify-end text-xs">
           <span className="texto-2 flex items-center gap-1.5">
             <IconoCheck className="h-3.5 w-3.5" />Guardado en este navegador
           </span>
@@ -150,14 +154,22 @@ export default function Inicio() {
 
         <BarraFormato onAviso={(m) => mostrarAviso({ titulo: m, tipo: "error" })} />
 
-        <Hoja
-          doc={doc}
-          version={version}
-          onChange={setDoc}
-          onAviso={(m) => mostrarAviso({ titulo: m, tipo: "error" })}
-        />
+        {/* Marco de borrador: indica que la hoja es una vista previa; no sale en el documento */}
+        <div className="marco-borrador">
+          <div className="marco-etiqueta">
+            <span className="marco-sello">Borrador</span>
+            <span>Vista previa de la plantilla. El documento final se crea al descargarlo.</span>
+            <button type="button" className="marco-ayuda" onClick={() => setAyuda(true)}>¿Cómo se usa?</button>
+          </div>
+          <Hoja
+            doc={doc}
+            version={version}
+            onChange={setDoc}
+            onAviso={(m) => mostrarAviso({ titulo: m, tipo: "error" })}
+          />
+        </div>
 
-        <section className="mt-8 grid w-full max-w-[816px] gap-3 text-[13px] sm:grid-cols-3">
+        <section className="mt-8 grid w-full max-w-[870px] gap-3 text-[13px] sm:grid-cols-3">
           {[
             { icono: <IconoDescargar />, titulo: "Word", texto: "Un .docx listo para Word, LibreOffice o Google Drive." },
             { icono: <IconoExterno />, titulo: "Google Docs", texto: "Se copia el documento y se abre uno nuevo en tu cuenta." },
@@ -173,6 +185,8 @@ export default function Inicio() {
           ))}
         </section>
       </main>
+
+      <Ayuda abierta={ayuda} onCerrar={() => setAyuda(false)} />
 
       {aviso && (
         <div role="status" className="aviso">
