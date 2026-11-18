@@ -60,8 +60,22 @@ En cualquier plataforma la configuración es la misma:
 
 La variable se lee **al compilar**: si se cambia, hay que volver a publicar.
 
-**Plataformas gratuitas recomendadas** (conectando el repositorio de GitHub, cada `git push`
-publica solo):
+### GitHub Pages (en uso)
+
+`.github/workflows/pages.yml` compila y publica en cada push a `main`, en
+`https://<cuenta>.github.io/documento-libre/`. Como el sitio vive en una subcarpeta, el
+workflow compila con `BASE_PATH=/documento-libre`. Los archivos de `public/` se piden con
+`ruta()` (`lib/ruta.ts`) para que lleven ese prefijo.
+
+1. **Settings → Pages → Source: GitHub Actions.** En el plan gratuito de GitHub, Pages solo
+   funciona con repositorios **públicos**.
+2. **Settings → Secrets and variables → Actions → Variables**: crear
+   `NEXT_PUBLIC_REGISTRO_URL` con la URL `/exec` del Apps Script.
+3. Hacer push a `main`, o ejecutar el workflow a mano desde la pestaña Actions.
+
+### Otras plataformas
+
+Publicadas en la raíz de un dominio, no necesitan `BASE_PATH`:
 
 - **Cloudflare Pages**: Workers & Pages → Crear → Pages → Conectar a Git. Preset "Next.js
   (Static HTML Export)". Sin restricción de uso comercial en el plan gratuito.

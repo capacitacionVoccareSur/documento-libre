@@ -27,6 +27,13 @@ No hay tests automatizados.
 - **Proxima Nova** solo va dentro del .docx / Google Docs. En pantalla se usa Figtree (licencia).
 - **Diseño:** tema único "Marca Voccare" (azul #192441 + degradé del logo), tokens en `:root`.
 
+## Publicación
+
+GitHub Pages vía `.github/workflows/pages.yml`, en la subcarpeta `/documento-libre`
+(`BASE_PATH`, ver `next.config.ts`). Todo archivo de `public/` se referencia con `ruta()`
+de `lib/ruta.ts`. En CSS, con ruta relativa a `public/` para que el bundler la procese.
+Nunca usar `"/plantilla/..."` a secas: rompe en Pages.
+
 ## Registro en Google Sheets
 
 `lib/registro.ts` envía cada exportación (Word, Google Docs, PDF) a un Apps Script

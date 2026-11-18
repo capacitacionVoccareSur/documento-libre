@@ -6,8 +6,9 @@
 import JSZip from "jszip"
 import { cargarImagen } from "./html"
 import { partesFecha, type Documento } from "./documento"
+import { ruta } from "./ruta"
 
-const URL_PLANTILLA = "/plantilla/reporte.docx"
+const URL_PLANTILLA = ruta("/plantilla/reporte.docx")
 
 // Medidas tomadas de la plantilla
 const IND_DESARROLLO = 283 // twips: sangría de los párrafos de "DESARROLLO DEL TEMA"

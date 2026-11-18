@@ -139,7 +139,7 @@ body { font-family: var(--font-ui), system-ui, sans-serif; }
 
 .franja {
   position: absolute; left: 0; right: 0; bottom: 1px; height: 8px;
-  background: url(/plantilla/franja.png) center / 100% 100% no-repeat;
+  background: url(../public/plantilla/franja.png) center / 100% 100% no-repeat;
 }
 
 /* Campos dentro de las celdas: parecen texto del documento */

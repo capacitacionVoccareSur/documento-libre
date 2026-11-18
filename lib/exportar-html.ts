@@ -4,6 +4,7 @@
 // - Impresión / PDF: la misma maqueta exacta de la hoja en pantalla.
 
 import { partesFecha, type Documento } from "./documento"
+import { ruta } from "./ruta"
 
 const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")
@@ -14,7 +15,7 @@ const PROXIMA = "'Proxima Nova',Figtree,Arial,sans-serif"
 let logoCache: string | null = null
 async function logoDataUrl(): Promise<string> {
   if (logoCache) return logoCache
-  const blob = await (await fetch("/plantilla/logo.png")).blob()
+  const blob = await (await fetch(ruta("/plantilla/logo.png"))).blob()
   logoCache = await new Promise<string>((ok, mal) => {
     const fr = new FileReader()
     fr.onload = () => ok(fr.result as string)

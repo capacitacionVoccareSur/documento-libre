@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { EditorContenido } from "./Editor"
 import { partesFecha, type Documento } from "@/lib/documento"
+import { ruta } from "@/lib/ruta"
 
 // Réplica en pantalla de la plantilla RE-VOC-TR-02 (public/plantilla/reporte.docx).
 // Las medidas salen del .docx original (twips ÷ 15 = px a 96 dpi); ver
@@ -59,7 +60,7 @@ export default function Hoja({ doc, version, onChange, onAviso }: Props) {
               <tr style={{ height: 19 }}>
                 <td rowSpan={5} className="enc-logo">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/plantilla/logo.png" alt="Voccare" width={104} height={92} />
+                  <img src={ruta("/plantilla/logo.png")} alt="Voccare" width={104} height={92} />
                   <p>&nbsp;</p>
                   <p>&nbsp;</p>
                 </td>
