@@ -6,8 +6,10 @@ Mini web pública para completar el formato de asistencia a capacitaciones
 - **Word (.docx)**: se genera en el navegador rellenando la plantilla original
   (`public/plantilla/reporte.docx`, exportada de Google Docs), así que el resultado
   es idéntico al formato oficial.
-- **Google Docs**: copia el documento con formato y abre `docs.new` en la cuenta de
-  quien lo usa; solo hay que pegar con Ctrl+V.
+- **Google Docs**: sube ese mismo .docx al Google Drive de quien usa la app, convertido a
+  Google Docs, y lo abre. La primera vez Google pide permiso (scope `drive.file`: la app solo
+  accede a los archivos que crea). Sin `NEXT_PUBLIC_GOOGLE_CLIENT_ID`, copia el documento y
+  abre `docs.new` para pegarlo con Ctrl+V.
 - **PDF**: usa el diálogo de impresión del navegador ("Guardar como PDF").
 
 El borrador se guarda automáticamente en el navegador (`localStorage`).
@@ -38,6 +40,19 @@ script, publicá una **nueva versión** de la implementación para que tome efec
 > La URL del script queda visible en el código de la página, así que cualquiera podría
 > enviarle filas. El script valida el formato, recorta textos largos y neutraliza
 > fórmulas, pero no es un control de acceso: para eso está pensado el ingreso con código.
+
+## Google Docs directo
+
+1. En Google Cloud, en un proyecto con la **Google Drive API** habilitada:
+   **APIs y servicios → Credenciales → ID de cliente OAuth** de tipo *Aplicación web*. Se puede
+   reusar el de voccare-app.
+2. En **Orígenes de JavaScript autorizados** agregar el sitio
+   (`https://capacitacionvoccaresur.github.io`) y, para desarrollo, `http://localhost:3000`.
+   No hacen falta URIs de redirección.
+3. La pantalla de consentimiento define quién puede usarlo: *Interno* = solo cuentas de la
+   organización de Google Workspace; *Externo* en prueba = solo los usuarios de prueba.
+4. Guardar el ID como `NEXT_PUBLIC_GOOGLE_CLIENT_ID` (`.env.local` y variable del repositorio).
+   El ID de cliente no es secreto; el secreto del cliente **no** se usa ni se publica.
 
 ## Comandos
 
@@ -70,7 +85,8 @@ workflow compila con `BASE_PATH=/documento-libre`. Los archivos de `public/` se 
 1. **Settings → Pages → Source: GitHub Actions.** En el plan gratuito de GitHub, Pages solo
    funciona con repositorios **públicos**.
 2. **Settings → Secrets and variables → Actions → Variables**: crear
-   `NEXT_PUBLIC_REGISTRO_URL` con la URL `/exec` del Apps Script.
+   `NEXT_PUBLIC_REGISTRO_URL` con la URL `/exec` del Apps Script y
+   `NEXT_PUBLIC_GOOGLE_CLIENT_ID` con el ID de cliente OAuth.
 3. Hacer push a `main`, o ejecutar el workflow a mano desde la pestaña Actions.
 
 ### Otras plataformas
@@ -97,6 +113,8 @@ Publicadas en la raíz de un dominio, no necesitan `BASE_PATH`:
 | `lib/html.ts` | Saneado del HTML pegado y normalización de imágenes a PNG/JPEG |
 | `lib/exportar-word.ts` | Rellena la plantilla original .docx (marcadores, filas de asistentes, contenido e imágenes) |
 | `lib/exportar-html.ts` | HTML con estilos en línea para Google Docs, e impresión de la hoja |
+| `lib/google-docs.ts` | Permiso de Google (GIS) y subida del .docx a Drive como Google Docs |
+| `components/Ayuda.tsx` | Panel "Cómo se usa" |
 | `lib/registro.ts` | Envío de cada documento generado al Apps Script de la planilla |
 | `apps-script/Registro.gs` | Script que agrega las filas en Google Sheets |
 | `public/plantilla/` | Plantilla original, logo y franja del pie |

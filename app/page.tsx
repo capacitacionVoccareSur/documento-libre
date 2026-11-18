@@ -26,6 +26,7 @@ import {
 } from "@/lib/documento"
 import { copiarAlPortapapeles, descargar, imprimir } from "@/lib/exportar-html"
 import { registrarGeneracion } from "@/lib/registro"
+import { crearEnGoogleDocs, ErrorGoogle, googleDocsDirecto, precargarGoogle } from "@/lib/google-docs"
 
 type Accion = "word" | "gdocs" | "pdf" | null
 type Aviso = { titulo: string; detalle?: React.ReactNode; tipo: "ok" | "error" }
@@ -41,6 +42,7 @@ export default function Inicio() {
   // Cargar borrador solo en el cliente (la página es estática)
   useEffect(() => {
     setDoc(cargarBorrador() ?? documentoNuevo())
+    precargarGoogle()
   }, [])
 
   // Autoguardado local
@@ -83,7 +85,49 @@ export default function Inicio() {
     }
   }
 
-  const abrirEnGoogleDocs = async () => {
+  const abrirEnGoogleDocs = () => (googleDocsDirecto ? crearGoogleDoc() : copiarParaGoogleDocs())
+
+  // Con NEXT_PUBLIC_GOOGLE_CLIENT_ID: se crea el documento en el Drive de quien lo usa
+  const crearGoogleDoc = async () => {
+    setOcupado("gdocs")
+    try {
+      const { url, abierto } = await crearEnGoogleDocs(doc)
+      registrarGeneracion(doc, "Google Docs")
+      mostrarAviso(
+        {
+          titulo: "Documento creado en tu Google Drive",
+          detalle: (
+            <>
+              {abierto ? "Se abrió en una pestaña nueva. " : ""}
+              <a href={url} target="_blank" rel="noopener noreferrer" className="font-semibold underline underline-offset-2">Abrir en Google Docs</a>
+            </>
+          ),
+          tipo: "ok",
+        },
+        abierto ? 8000 : 30000,
+      )
+    } catch (err) {
+      console.error(err)
+      const motivo = err instanceof ErrorGoogle ? err.motivo : "subida"
+      const textos: Record<string, [string, string]> = {
+        cancelado: ["No se dio permiso a Google", "Para crear el documento hace falta aceptar el permiso en la ventana de Google."],
+        bloqueado: ["El navegador bloqueó la ventana de Google", "Permití las ventanas emergentes para este sitio y volvé a tocar Google Docs."],
+        "sin-cargar": ["Google todavía no terminó de cargar", "Esperá unos segundos y volvé a intentar."],
+        subida: ["No se pudo crear en Google Docs", "Probá de nuevo, o descargá el Word y subilo a Google Drive."],
+      }
+      const [titulo, detalle] = textos[motivo]
+      mostrarAviso({
+        titulo,
+        detalle,
+        tipo: "error",
+      })
+    } finally {
+      setOcupado(null)
+    }
+  }
+
+  // Sin cliente de Google configurado: copiar y pegar en un documento nuevo
+  const copiarParaGoogleDocs = async () => {
     setOcupado("gdocs")
     try {
       await copiarAlPortapapeles(doc)
@@ -136,7 +180,7 @@ export default function Inicio() {
             <button className="btn btn-fantasma" onClick={nuevo}><IconoNuevo />Nuevo</button>
             <button className="btn btn-fantasma" onClick={exportarPdf} disabled={!!ocupado}><IconoImprimir />PDF</button>
             <button className="btn" onClick={abrirEnGoogleDocs} disabled={!!ocupado}>
-              <IconoExterno />{ocupado === "gdocs" ? "Copiando…" : "Google Docs"}
+              <IconoExterno />{ocupado === "gdocs" ? (googleDocsDirecto ? "Creando…" : "Copiando…") : "Google Docs"}
             </button>
             <button className="btn btn-primario" onClick={exportarWord} disabled={!!ocupado}>
               <IconoDescargar />{ocupado === "word" ? "Generando…" : "Descargar Word"}
@@ -172,8 +216,14 @@ export default function Inicio() {
         <section className="mt-8 grid w-full max-w-[870px] gap-3 text-[13px] sm:grid-cols-3">
           {[
             { icono: <IconoDescargar />, titulo: "Word", texto: "Un .docx listo para Word, LibreOffice o Google Drive." },
-            { icono: <IconoExterno />, titulo: "Google Docs", texto: "Se copia el documento y se abre uno nuevo en tu cuenta." },
-            { icono: <IconoCandado />, titulo: "Sin cuentas", texto: "No necesitás iniciar sesión. Al generar, se registran los datos del formato." },
+            {
+              icono: <IconoExterno />,
+              titulo: "Google Docs",
+              texto: googleDocsDirecto
+                ? "Se crea en tu Google Drive y se abre solo. La primera vez, Google te pide permiso."
+                : "Se copia el documento y se abre uno nuevo en tu cuenta.",
+            },
+            { icono: <IconoCandado />, titulo: "Sin cuentas", texto: "No hace falta registrarse. Al generar, se registran los datos del formato." },
           ].map((t) => (
             <div key={t.titulo} className="tarjeta flex gap-3">
               <span className="icono-suave shrink-0">{t.icono}</span>

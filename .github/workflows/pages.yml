@@ -1,6 +1,6 @@
 # Publica la exportación estática en GitHub Pages en cada push a main.
 # Requiere: Settings → Pages → Source: "GitHub Actions", y la variable de repositorio
-# NEXT_PUBLIC_REGISTRO_URL (Settings → Secrets and variables → Actions → Variables).
+# NEXT_PUBLIC_REGISTRO_URL y NEXT_PUBLIC_GOOGLE_CLIENT_ID (Settings → Secrets and variables → Actions → Variables).
 name: Publicar en GitHub Pages
 
 on:
@@ -31,6 +31,7 @@ jobs:
         env:
           BASE_PATH: /${{ github.event.repository.name }}
           NEXT_PUBLIC_REGISTRO_URL: ${{ vars.NEXT_PUBLIC_REGISTRO_URL }}
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ vars.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: out

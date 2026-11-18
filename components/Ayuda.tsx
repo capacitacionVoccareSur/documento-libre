@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import { IconoCerrar } from "./Iconos"
+import { googleDocsDirecto } from "@/lib/google-docs"
 
 // Panel con los pasos para completar y generar el documento.
 // <dialog> nativo: Esc cierra y el foco queda dentro mientras está abierto.
@@ -71,7 +72,12 @@ export default function Ayuda({ abierta, onCerrar }: { abierta: boolean; onCerra
             Con los botones de arriba a la derecha:
             <ul>
               <li><b className="inline text-[var(--text)]">Descargar Word:</b> un .docx con el formato oficial, listo para Word o Google Drive.</li>
-              <li><b className="inline text-[var(--text)]">Google Docs:</b> se copia el documento y se abre uno nuevo en tu cuenta; pegá con Ctrl + V.</li>
+              <li>
+                <b className="inline text-[var(--text)]">Google Docs:</b>{" "}
+                {googleDocsDirecto
+                  ? "se crea en tu Google Drive con el formato oficial y se abre solo. La primera vez, Google te pide permiso para guardarlo."
+                  : "se copia el documento y se abre uno nuevo en tu cuenta; pegá con Ctrl + V."}
+              </li>
               <li><b className="inline text-[var(--text)]">PDF:</b> en la ventana de impresión elegí “Guardar como PDF”.</li>
             </ul>
           </div>
